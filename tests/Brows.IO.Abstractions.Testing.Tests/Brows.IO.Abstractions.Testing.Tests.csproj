@@ -3,7 +3,5 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\source\Brows.IO.Abstractions.Testing\Brows.IO.Abstractions.Testing.csproj" />
-    <ProjectReference Include="..\..\source\Brows.Composition.Testing\Brows.Composition.Testing.csproj" />
-    <ProjectReference Include="..\..\source\Brows.Config\Brows.Config.csproj" />
   </ItemGroup>
 </Project>

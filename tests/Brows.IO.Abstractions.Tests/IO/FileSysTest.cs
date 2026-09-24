@@ -1,6 +1,4 @@
-using NUnit.Framework;
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +11,7 @@ internal sealed class FileSysTest {
 
     private IFileSys Subject {
         get => field ??= new FileSys();
-        set => field = value;
+        set;
     }
 
     private string Write(string text) {
@@ -26,7 +24,7 @@ internal sealed class FileSysTest {
     [SetUp]
     public void SetUp() {
         Subject = null;
-        Temp = Path.Combine(Path.GetTempPath(), $"Brows.Abstractions.IO.Tests_{Guid.NewGuid()}");
+        Temp = Path.Combine(Path.GetTempPath(), $"Brows.IO.Abstractions.Tests_{Guid.NewGuid()}");
         TempInfo = new DirectoryInfo(Temp);
         TempInfo.Create();
     }

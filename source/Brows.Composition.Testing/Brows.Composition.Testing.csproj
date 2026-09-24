@@ -2,7 +2,7 @@
   <PropertyGroup>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Brows.Abstractions.IO.Testing\Brows.Abstractions.IO.Testing.csproj" />
+    <ProjectReference Include="..\Brows.IO.Abstractions.Testing\Brows.IO.Abstractions.Testing.csproj" />
     <ProjectReference Include="..\Brows.Composition\Brows.Composition.csproj" />
   </ItemGroup>
 </Project>

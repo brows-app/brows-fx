@@ -21,8 +21,9 @@
   </Folder>
   <Folder Name="/source/">
     <File Path="source/Directory.Build.props" />
-    <Project Path="source/Brows.Abstractions.IO.Testing/Brows.Abstractions.IO.Testing.csproj" />
-    <Project Path="source/Brows.Abstractions.IO/Brows.Abstractions.IO.csproj" />
+    <Project Path="source/Brows.IO.Abstractions.Testing/Brows.IO.Abstractions.Testing.csproj" />
+    <Project Path="source/Brows.IO.Abstractions/Brows.IO.Abstractions.csproj" />
+    <Project Path="source/Brows.IO.Helpers/Brows.IO.Helpers.csproj" />
     <Project Path="source/Brows.CLI.About/Brows.CLI.About.csproj" />
     <Project Path="source/Brows.CLI.Help/Brows.CLI.Help.csproj" />
     <Project Path="source/Brows.CLI/Brows.CLI.csproj" />
@@ -37,8 +38,9 @@
   <Folder Name="/tests/">
     <File Path="tests/Directory.Build.props" />
     <File Path="tests/Directory.Build.targets" />
-    <Project Path="tests/Brows.Abstractions.IO.Testing.Tests/Brows.Abstractions.IO.Testing.Tests.csproj" />
-    <Project Path="tests/Brows.Abstractions.IO.Tests/Brows.Abstractions.IO.Tests.csproj" />
+    <Project Path="tests/Brows.IO.Abstractions.Testing.Tests/Brows.IO.Abstractions.Testing.Tests.csproj" />
+    <Project Path="tests/Brows.IO.Abstractions.Tests/Brows.IO.Abstractions.Tests.csproj" />
+    <Project Path="tests/Brows.IO.Helpers.Tests/Brows.IO.Helpers.Tests.csproj" />
     <Project Path="tests/Brows.CLI.About.Tests/Brows.CLI.About.Tests.csproj" />
     <Project Path="tests/Brows.CLI.Help.Tests/Brows.CLI.Help.Tests.csproj" />
     <Project Path="tests/Brows.CLI.Tests/Brows.CLI.Tests.csproj" />

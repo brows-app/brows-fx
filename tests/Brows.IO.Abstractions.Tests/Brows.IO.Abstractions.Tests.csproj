@@ -2,6 +2,6 @@
   <PropertyGroup>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\source\Brows.Abstractions.IO\Brows.Abstractions.IO.csproj" />
+    <ProjectReference Include="..\..\source\Brows.IO.Abstractions\Brows.IO.Abstractions.csproj" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,29 @@
+name: Build and test
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+jobs:
+  build-and-test:
+    name: Build and test the solution
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: windows-latest
+    env:
+      BROWS_TEST_ENV: GitHubAction
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+      issues: read
+      checks: write
+      pull-requests: write
+      code-quality: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+      with:
+        lfs: true
+
+    - name: Build and test
+      uses: ./.github/actions/build-and-test

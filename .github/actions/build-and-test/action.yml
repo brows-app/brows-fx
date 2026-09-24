@@ -1,0 +1,60 @@
+name: Build and test the .NET solution
+description: Builds the .NET solution and runs all discovered tests
+inputs:
+  dotnet-version:
+    description: The value of dotnet-version passed to the setup-dotnet action
+    required: false
+    default: 10.x
+  upload-code-coverage:
+    description: Whether or not to upload code coverage results
+    required: false
+    default: false
+runs:
+  using: composite
+  steps:
+  - name: Setup .NET
+    uses: actions/setup-dotnet@v6
+    with:
+      dotnet-version: ${{ inputs.dotnet-version }} 
+
+  - name: Restore the NuGet packages for the solution
+    shell: bash
+    run: dotnet restore
+  
+  - name: Build the solution
+    shell: bash
+    run: dotnet build --no-restore --configuration Release --property:ContinuousIntegrationBuild=true
+
+  - name: Test the build
+    shell: bash
+    run: dotnet test --no-restore --configuration Release --property:ContinuousIntegrationBuild=true --no-build --verbosity normal --logger trx --results-directory ./test-results --collect:"XPlat Code Coverage"
+
+  - name: Publish test results
+    uses: EnricoMi/publish-unit-test-result-action/windows@v2
+    if: (!cancelled())
+    with:
+      files: test-results/**/*.trx
+      check_name: Test results
+
+  - name: Report code coverage
+    uses: danielpalme/ReportGenerator-GitHub-Action@5.5.10
+    if: (!cancelled())
+    with:
+      reports: test-results/**/coverage.cobertura.xml
+      targetdir: test-reports
+      reporttypes: Cobertura;MarkdownSummaryGithub;Badges
+      assemblyfilters: +Brows.*;-*.Tests;-*.Sample;-*.Sample.*
+      filefilters: -*.g.cs
+
+  - name: Upload code coverage
+    if: (inputs.upload-code-coverage == 'true') && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    uses: actions/upload-code-coverage@v1
+    with:
+      file: test-reports/Cobertura.xml
+      language: 'C#'
+      label: code-coverage/dotnet
+
+  - name: Publish code coverage
+    if: (!cancelled())
+    shell: bash
+    run: sed '/<\/details>/q' test-reports/SummaryGithub.md >> $GITHUB_STEP_SUMMARY

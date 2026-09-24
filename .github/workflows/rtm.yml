@@ -1,0 +1,58 @@
+name: Pack and push
+on:
+  release:
+    types: [ published ]
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+  BROWS_TEST_ENV: GitHubAction
+  BROWS_PACK_OUTPUT: ${{ github.workspace }}/pack-output
+jobs:
+  build-test-pack-and-push:
+    name: Build, test, pack, and push the NuGet packages in the solution
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      packages: write
+      issues: read
+      checks: write
+      pull-requests: write
+      code-quality: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+      with:
+        ref: ${{ github.event.release.target_commitish }}
+        lfs: true
+
+    - name: Update the build properties
+      run: |
+        $xml = Convert-Path "${{ github.workspace }}/Directory.Build.props"
+        $doc = New-Object xml
+        $doc.Load($xml)
+        $doc.SelectSingleNode("/Project/PropertyGroup/VersionPrefix").InnerText = "${{ github.event.release.tag_name }}"
+        $doc.SelectSingleNode("/Project/PropertyGroup/RepositoryBranch").InnerText = "${{ github.event.release.target_commitish }}"
+        $doc.SelectSingleNode("/Project/PropertyGroup/RepositoryCommit").InnerText = $(git rev-parse ${{ github.event.release.target_commitish }}) -join ''
+        $doc.Save($xml)
+
+    - name: Build and test
+      uses: ./.github/actions/build-and-test
+
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
+    - name: Pack the NuGet packages
+      run: |
+        $sourceRoot = Join-Path "${{ github.workspace }}" "source"
+        foreach($project in (Get-ChildItem $sourceRoot -Recurse -Include *.csproj)) {
+          dotnet pack $project.FullName --no-restore --configuration Release --property:ContinuousIntegrationBuild=true --no-build --output ${{ env.BROWS_PACK_OUTPUT }}
+        }
+
+    - name: Push the packed NuGet packages
+      run: |
+        foreach($file in (Get-ChildItem "${{ env.BROWS_PACK_OUTPUT }}" -Recurse -Include *.nupkg)) {
+          dotnet nuget push $file --api-key "${{steps.login.outputs.NUGET_API_KEY}}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        }

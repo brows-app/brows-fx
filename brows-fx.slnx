@@ -1,0 +1,61 @@
+<Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/actions/" />
+  <Folder Name="/.github/actions/build-and-test/">
+    <File Path=".github/actions/build-and-test/action.yml" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/dev.yml" />
+    <File Path=".github/workflows/rtm.yml" />
+  </Folder>
+  <Folder Name="/samples/">
+    <File Path="samples/Directory.Build.props" />
+    <Project Path="samples/Brows.CLI.Sample/Brows.CLI.Sample.csproj" />
+    <Project Path="samples/Brows.IPC.Sample.Client/Brows.IPC.Sample.Client.csproj" />
+    <Project Path="samples/Brows.IPC.Sample.Common/Brows.IPC.Sample.Common.csproj" />
+    <Project Path="samples/Brows.IPC.Sample.Host/Brows.IPC.Sample.Host.csproj" />
+  </Folder>
+  <Folder Name="/shared/">
+    <Project Path="shared/Brows.Shims.Tests/Brows.Shims.Tests.shproj" Id="468c344a-6687-4521-96d3-7b21ead843f1" />
+    <Project Path="shared/Brows.Shims/Brows.Shims.shproj" Id="8672a2c4-a2e5-4353-9ef9-1673d4aea0cc" />
+  </Folder>
+  <Folder Name="/source/">
+    <File Path="source/Directory.Build.props" />
+    <Project Path="source/Brows.Abstractions.IO.Testing/Brows.Abstractions.IO.Testing.csproj" />
+    <Project Path="source/Brows.Abstractions.IO/Brows.Abstractions.IO.csproj" />
+    <Project Path="source/Brows.CLI.About/Brows.CLI.About.csproj" />
+    <Project Path="source/Brows.CLI.Help/Brows.CLI.Help.csproj" />
+    <Project Path="source/Brows.CLI/Brows.CLI.csproj" />
+    <Project Path="source/Brows.Composition.Testing/Brows.Composition.Testing.csproj" />
+    <Project Path="source/Brows.Composition/Brows.Composition.csproj" />
+    <Project Path="source/Brows.Config.Json/Brows.Config.Json.csproj" />
+    <Project Path="source/Brows.Config/Brows.Config.csproj" />
+    <Project Path="source/Brows.Instantiation/Brows.Instantiation.csproj" />
+    <Project Path="source/Brows.IPC.Host/Brows.IPC.Host.csproj" />
+    <Project Path="source/Brows.IPC/Brows.IPC.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <File Path="tests/Directory.Build.props" />
+    <File Path="tests/Directory.Build.targets" />
+    <Project Path="tests/Brows.Abstractions.IO.Testing.Tests/Brows.Abstractions.IO.Testing.Tests.csproj" />
+    <Project Path="tests/Brows.Abstractions.IO.Tests/Brows.Abstractions.IO.Tests.csproj" />
+    <Project Path="tests/Brows.CLI.About.Tests/Brows.CLI.About.Tests.csproj" />
+    <Project Path="tests/Brows.CLI.Help.Tests/Brows.CLI.Help.Tests.csproj" />
+    <Project Path="tests/Brows.CLI.Tests/Brows.CLI.Tests.csproj" />
+    <Project Path="tests/Brows.Composition.Tests/Brows.Composition.Tests.csproj" />
+    <Project Path="tests/Brows.Config.Tests/Brows.Config.Tests.csproj" />
+    <Project Path="tests/Brows.Instantiation.Tests/Brows.Instantiation.Tests.csproj" />
+    <Project Path="tests/Brows.IPC.Host.Tests/Brows.IPC.Host.Tests.csproj" />
+    <Project Path="tests/Brows.IPC.Tests/Brows.IPC.Tests.csproj" />
+  </Folder>
+  <Folder Name="/_/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+    <File Path="spelling.exclusion.dic" />
+  </Folder>
+</Solution>

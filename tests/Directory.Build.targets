@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!--
+    If this project is under the *source* directory, it includes a shared
+    project with various shims. This included test project tests those shims.
+  -->
+  <Import
+    Project="$(MSBuildThisFileDirectory)..\shared\Brows.Shims.Tests\Brows.Shims.Tests.projitems"
+    Label="Shared"
+    Condition="'$(Brows_ImportShimsTests)' != 'false' And Exists('$(Brows_TestedSourceProjectPath)')" />
+</Project>

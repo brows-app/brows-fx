@@ -5,4 +5,25 @@
     <ProjectReference Include="..\..\source\Brows.Composition.Testing\Brows.Composition.Testing.csproj" />
     <ProjectReference Include="..\..\source\Brows.Composition\Brows.Composition.csproj" />
   </ItemGroup>
+  <!--
+    ComposedDependencyResolutionTest runs on net10.0 only, and drives the components on both of their frameworks.
+    The components are built first but not referenced, so they never reach this project's output. Removing the
+    inherited TargetFramework builds every framework of each component, not only net10.0.
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <ProjectReference Include="..\components\Brows.Composition.Component.Consumer\Brows.Composition.Component.Consumer.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" GlobalPropertiesToRemove="TargetFramework" Private="false" />
+    <ProjectReference Include="..\components\Brows.Composition.Component.Export\Brows.Composition.Component.Export.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" GlobalPropertiesToRemove="TargetFramework" Private="false" />
+    <ProjectReference Include="..\components\Brows.Composition.Component.Host\Brows.Composition.Component.Host.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" GlobalPropertiesToRemove="TargetFramework" Private="false" />
+    <ProjectReference Include="..\components\Brows.Composition.Component.Library\Brows.Composition.Component.Library.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" GlobalPropertiesToRemove="TargetFramework" Private="false" />
+    <ProjectReference Include="..\components\Brows.Composition.Component.Library.V1\Brows.Composition.Component.Library.V1.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" GlobalPropertiesToRemove="TargetFramework" Private="false" />
+    <ProjectReference Include="..\components\Brows.Composition.Component.Middle\Brows.Composition.Component.Middle.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" GlobalPropertiesToRemove="TargetFramework" Private="false" />
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>BrowsComponentBin</_Parameter1>
+      <_Parameter2>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\out\components\bin'))</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>BrowsComponentConfiguration</_Parameter1>
+      <_Parameter2>$(Configuration.ToLowerInvariant())</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>

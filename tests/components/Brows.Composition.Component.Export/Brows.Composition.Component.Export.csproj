@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\source\Brows.Composition\Brows.Composition.csproj" Private="false" />
+    <ProjectReference Include="..\Brows.Composition.Component.Library\Brows.Composition.Component.Library.csproj" Private="false" />
+    <ProjectReference Include="..\Brows.Composition.Component.Middle\Brows.Composition.Component.Middle.csproj" Private="false" />
+  </ItemGroup>
+</Project>

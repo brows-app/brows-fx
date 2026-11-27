@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    The same assembly as Brows.Composition.Component.Library, at a lower version.
+  -->
+  <PropertyGroup>
+    <AssemblyName>Brows.Composition.Component.Library</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Brows.Composition.Component.Library\ComponentLibrary.cs" Link="ComponentLibrary.cs" />
+  </ItemGroup>
+</Project>

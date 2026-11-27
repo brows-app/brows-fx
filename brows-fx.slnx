@@ -50,8 +50,19 @@
     <Project Path="tests/Brows.IPC.Host.Tests/Brows.IPC.Host.Tests.csproj" />
     <Project Path="tests/Brows.IPC.Tests/Brows.IPC.Tests.csproj" />
   </Folder>
+  <Folder Name="/tests/components/">
+    <File Path="tests/components/Directory.Build.props" />
+    <File Path="tests/components/Directory.Build.targets" />
+    <Project Path="tests/components/Brows.Composition.Component.Consumer/Brows.Composition.Component.Consumer.csproj" />
+    <Project Path="tests/components/Brows.Composition.Component.Export/Brows.Composition.Component.Export.csproj" />
+    <Project Path="tests/components/Brows.Composition.Component.Host/Brows.Composition.Component.Host.csproj" />
+    <Project Path="tests/components/Brows.Composition.Component.Library.V1/Brows.Composition.Component.Library.V1.csproj" />
+    <Project Path="tests/components/Brows.Composition.Component.Library/Brows.Composition.Component.Library.csproj" />
+    <Project Path="tests/components/Brows.Composition.Component.Middle/Brows.Composition.Component.Middle.csproj" />
+  </Folder>
   <Folder Name="/_/">
     <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
     <File Path=".gitignore" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />

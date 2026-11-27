@@ -33,6 +33,11 @@ public abstract class ImportInfo {
     /// <returns>
     /// The information for initializing imports via composition.
     /// </returns>
+    /// <remarks>
+    /// An assembly composed from a path can keep its private dependencies in a directory beside it, named for the
+    /// assembly file without its extension. Assemblies in that directory are loaded on demand when ordinary probing
+    /// does not find them.
+    /// </remarks>
     public static ImportInfo Composed(Func<ImportVariables> variables = null,
                                       Func<Dictionary<string, IEnumerable<string>>> path = null,
                                       Func<IEnumerable<IExport>> inject = null) {

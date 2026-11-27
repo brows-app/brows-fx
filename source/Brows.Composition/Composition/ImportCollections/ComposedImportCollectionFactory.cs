@@ -3,12 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Brows.Composition.ImportCollections;
@@ -58,6 +56,11 @@ internal sealed class ComposedImportCollectionFactory : ImportCollectionFactory 
         var imports = path;
         var exports = new List<IExport>(Info.Inject.Where(item => item is not null));
         List<IExport> List(List<IDisposable> resources) {
+            /*
+             * Create every catalog before composing any of them, so that the dependencies
+             * of all composed files can be resolved while types are inspected.
+             */
+            var catalogs = new List<DirectoryCatalog>();
             foreach (var import in imports) {
                 var path = import.Key;
                 var patterns = import.Value ?? [];
@@ -73,32 +76,40 @@ internal sealed class ComposedImportCollectionFactory : ImportCollectionFactory 
                         }
                         continue;
                     }
-                    var part = new AttributedPart();
-                    var catalog = default(ComposablePartCatalog);
-                    var container = default(CompositionContainer);
-                    resources.Add(catalog = new DirectoryCatalog(path, searchPattern: pattern));
-                    resources.Add(container = new CompositionContainer(catalog));
-                    try {
-                        container.ComposeParts(part);
-                    }
-                    catch (ReflectionTypeLoadException ex) {
-                        var loaderExceptions = ex?.LoaderExceptions;
-                        if (loaderExceptions != null) {
-                            foreach (var loaderException in loaderExceptions) {
-                                if (Log.Warn()) {
-                                    Log.Warn("Loader Exception", loaderException);
-                                }
+                    var catalog = new DirectoryCatalog(
+                        path, searchPattern: pattern);
+                    resources.Add(catalog);
+                    catalogs.Add(catalog);
+                }
+            }
+            var resolver = new ComposedDependencyResolver(
+                catalogs.SelectMany(catalog => catalog.LoadedFiles));
+            resources.Add(resolver);
+            resolver.Attach();
+            foreach (var catalog in catalogs) {
+                var part = new AttributedPart();
+                var container = new CompositionContainer(catalog);
+                resources.Add(container);
+                try {
+                    container.ComposeParts(part);
+                }
+                catch (ReflectionTypeLoadException ex) {
+                    var loaderExceptions = ex?.LoaderExceptions;
+                    if (loaderExceptions != null) {
+                        foreach (var loaderException in loaderExceptions) {
+                            if (Log.Warn()) {
+                                Log.Warn("Loader Exception", loaderException);
                             }
                         }
-                        throw;
                     }
-                    if (Log.Info()) {
-                        Log.Info($"Imports: {part.Exports.Count()}",
-                                 $"----------------",
-                                 part.Exports.Select(export => export?.GetType()));
-                    }
-                    exports.AddRange(part.Exports);
+                    throw;
                 }
+                if (Log.Info()) {
+                    Log.Info($"Imports: {part.Exports.Count()}",
+                             $"----------------",
+                             part.Exports.Select(export => export?.GetType()));
+                }
+                exports.AddRange(part.Exports);
             }
             return exports;
         }

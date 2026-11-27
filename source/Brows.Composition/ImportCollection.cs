@@ -32,6 +32,7 @@ internal sealed class ImportCollection {
 #endif
         InitializationLocker = new();
 
+    private int ResourcesDisposed;
     private IExportVariables Variables;
     private Task<ImportCollection> Initialization;
 
@@ -174,11 +175,43 @@ internal sealed class ImportCollection {
         }
         var
         collection = await factory.Create(token);
-        collection.Variables = variables?.ExportVariables;
-        await
-        collection.Initialize(token);
-        collection.Populate(agent);
+        try {
+            collection.Variables = variables?.ExportVariables;
+            await
+            collection.Initialize(token);
+            collection.Populate(agent);
+        }
+        catch {
+            /*
+             * Nothing else owns the collection yet, so release its
+             * resources (including process-wide event handlers) here.
+             */
+            collection.DisposeResources();
+            throw;
+        }
         return collection;
+    }
+
+    /*
+     * Disposes Resources in reverse order. Only the first call has an effect,
+     * and exceptions thrown by the resources are logged instead of propagated.
+     */
+    internal void DisposeResources() {
+        if (Interlocked.Exchange(ref ResourcesDisposed, 1) != 0) {
+            return;
+        }
+        var resources = Resources?.Reverse()?.ToList();
+        if (resources is null) {
+            return;
+        }
+        foreach (var resource in resources) {
+            try {
+                resource?.Dispose();
+            }
+            catch (Exception ex) {
+                Log.Error(ex);
+            }
+        }
     }
 
     internal void InvokeImportsReadyCallbacks() {

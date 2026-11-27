@@ -1,7 +1,5 @@
 ﻿using Domore.Logs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,51 +22,46 @@ internal sealed class ImportState : IDisposable {
         Locker = new();
 
     private bool Disposed;
+    private bool KilledLate;
     private ImportCollection CollectionCache;
     private Task<ImportCollection> CollectionTask;
 
     private ObjectDisposedException DisposedException() =>
         new(GetType().Name);
 
+    private static void Kill(ImportCollection collection) {
+        if (collection is null) {
+            return;
+        }
+        var killItems = collection.List<IExportAndKill>();
+        if (killItems is not null && killItems.Count > 0) {
+            foreach (var killItem in killItems) {
+                try {
+                    killItem?.Kill();
+                }
+                catch (Exception ex) {
+                    /*
+                     * Don't let Dispose throw any exceptions.
+                     */
+                    Log.Error(ex);
+                }
+            }
+        }
+        collection.DisposeResources();
+    }
+
     private void Dispose(bool disposing) {
         if (disposing) {
-            var killItems = default(IReadOnlyList<IExportAndKill>);
-            var resources = default(IReadOnlyList<IDisposable>);
+            var collection = default(ImportCollection);
             lock (Locker) {
                 /*
                  * Flag that this instance is disposed. This flag must
                  * never get reset to false. This is a one-and-done instance.
                  */
                 Disposed = true;
-                killItems = CollectionCache?.List<IExportAndKill>();
-                resources = CollectionCache?.Resources?.Reverse()?.ToList();
+                collection = CollectionCache;
             }
-            if (killItems is not null && killItems.Count > 0) {
-                foreach (var killItem in killItems) {
-                    try {
-                        killItem?.Kill();
-                    }
-                    catch (Exception ex) {
-                        /*
-                         * Don't let Dispose throw any exceptions.
-                         */
-                        Log.Error(ex);
-                    }
-                }
-            }
-            if (resources is not null && resources.Count > 0) {
-                foreach (var resource in resources) {
-                    try {
-                        resource?.Dispose();
-                    }
-                    catch (Exception ex) {
-                        /*
-                         * Don't let Dispose throw any exceptions.
-                         */
-                        Log.Error(ex);
-                    }
-                }
-            }
+            Kill(collection);
         }
     }
 
@@ -122,7 +115,25 @@ internal sealed class ImportState : IDisposable {
                 }
             }
         }
-        return CollectionCache = await CollectionTask;
+        var collection = await CollectionTask;
+        var killLate = false;
+        lock (Locker) {
+            if (Disposed == false) {
+                CollectionCache = collection;
+                return collection;
+            }
+            /*
+             * This instance was disposed while the collection was being created,
+             * so nothing else will release it. Several callers may be awaiting
+             * the same task, so only the first one kills it.
+             */
+            killLate = KilledLate == false;
+            KilledLate = true;
+        }
+        if (killLate) {
+            Kill(collection);
+        }
+        throw DisposedException();
     }
 
     /// <summary>
